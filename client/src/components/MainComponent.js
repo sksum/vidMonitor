@@ -12,12 +12,8 @@ const MainComponent = () => {
             <Router>
                 <Header />
                 <Switch>
-                    <Route exact path="/">
-                    <MainPage />
-                    </Route>
-                    <Route exact path="/new">
-                    <NewForm />
-                    </Route>
+                    <Route exact path="/" component={MainPage}/>
+                    <Route exact path="/new" component={NewForm}/>
                     <Route exact path="/newnew">
                     he
                     </Route>

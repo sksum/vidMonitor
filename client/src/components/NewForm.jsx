@@ -1,3 +1,7 @@
+import Firebase from "firebase";
+import config from "../config";
+import { v1 as uuid } from "uuid";
+
 import React, { Component } from "react";
 import {
   Form,
@@ -12,7 +16,6 @@ import {
 } from "reactstrap";
 import Preview from "./helper/Preview.jsx";
 import McqOptions from "./McqOptions.jsx";
-
 import {
   makeStyles,
   InputLabel,
@@ -129,6 +132,7 @@ const QuestionStatement = (props) => {
         placeholder={props.placeholder}
         variant="outlined"
         style={{ marginTop: "20px" }}
+        onChange={handleChange}
       />
       <Input type="file" name="file" id="exampleFile" />
     </form>
@@ -160,10 +164,15 @@ let globalId = 0;
 export default class NewForm extends Component {
   constructor(props) {
     super();
+    if (!Firebase.apps.length) {
+      console.log("init app");
+      Firebase.initializeApp(config);
+    }
     this.state = {
       questions: [],
       new_ques: {
         qs: "",
+        options: [],
       },
       type: "MCQ",
     };
@@ -172,7 +181,14 @@ export default class NewForm extends Component {
   changeType = (type) => {
     this.setState({ type });
   };
-
+  writeUserData = (ev) => {
+    const id = uuid();
+    const db = Firebase.database().ref("/").child(id);
+    db.set(this.state);
+    console.log(this.props);
+    this.props.history.push(`/invil/${id}`);
+    ev.preventDefault();
+  };
   registerNewQuestion = (event) => {
     console.log("new qs: ", this.state.new_ques);
     let questions = this.state.questions;
@@ -180,6 +196,7 @@ export default class NewForm extends Component {
       qs: this.state.new_ques.qs,
       id: globalId++,
       options: this.state.new_ques.options,
+      type: this.state.type,
     });
     this.setState({ questions });
     console.log(questions);
@@ -281,8 +298,10 @@ export default class NewForm extends Component {
           )}
           <Row style={{ marginBottom: "50px", marginTop: "20px" }}>
             <div className="mx-auto">
-              <ButtonStrap color="primary">Add Question</ButtonStrap>
-              {/* <Input color="primary" type="submit" value="Add Question" /> */}
+              <Button onClick={this.registerNewQuestion}>Add </Button>
+            </div>
+            <div className="mx-auto">
+              <Button onClick={this.writeUserData}>Make </Button>
             </div>
           </Row>
         </Form>

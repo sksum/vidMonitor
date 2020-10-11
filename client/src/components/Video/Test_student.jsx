@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import io from "socket.io-client";
+import Firebase from 'firebase';
+import config from '../../config';
 
 const Test_student = (props) => {
 
@@ -7,8 +9,22 @@ const Test_student = (props) => {
     const peerRef = useRef();
     const socketRef = useRef();
     const userStream = useRef();
-    
-    
+    let  questions = [];
+    if (!Firebase.apps.length) {
+        console.log("init app")
+        Firebase.initializeApp(config);
+        const db = Firebase.database().ref('/').child(props.match.params.roomID);
+        const getUserData = () => {
+            let ref = db
+            ref.on('value', snapshot => {
+              const state = snapshot.val();
+              questions = state;
+              console.log('DATA RETRIEVED',questions);
+              //  do ui here 
+            });
+          }
+        getUserData()
+    }
     
     const invil = useRef();
     
@@ -118,7 +134,7 @@ const Test_student = (props) => {
             .catch(e => console.log(e));
     }
 
-    console.log(userVideo)
+
 
     return (
             <video autoPlay ref={userVideo} />

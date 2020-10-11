@@ -1,7 +1,11 @@
 import React, {Component} from 'react';
-import { Form, FormGroup, Label, Input, FormText} from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, FormText} from 'reactstrap';
 import Preview from './helper/Preview.jsx'
 import McqOptions from './McqOptions.jsx'
+
+import Firebase from 'firebase';
+import config from '../config';
+import { v1 as uuid } from "uuid";
 
 const SavedQuestions = ({list,handleRemove}) => {
     return(
@@ -59,6 +63,10 @@ let globalId = 0;
 export default class NewForm extends Component {
     constructor(props) {
         super()
+        if (!Firebase.apps.length) {
+            console.log("init app")
+            Firebase.initializeApp(config);
+         }
         this.state= {
             questions:[],
             new_ques:{
@@ -67,6 +75,23 @@ export default class NewForm extends Component {
             type:"MCQ",
         }
     }
+
+    writeUserData = (ev) => {
+        const id = uuid();  
+        const db = Firebase.database().ref('/').child(id);
+        db.set(this.state);
+        console.log(this.props);
+        this.props.history.push(`/invil/${id}`);
+        ev.preventDefault()
+    }
+    
+    getUserData = () => {
+        let ref = Firebase.database().ref('/');
+        ref.on('value', snapshot => {
+            const state = snapshot.val();
+            console.log('DATA RETRIEVED',state);
+        });
+    }    
 
     changeType = (type) => {
         this.setState({type})
@@ -106,13 +131,16 @@ export default class NewForm extends Component {
                 <div className="row p-4 ">
                     <SavedQuestions list={this.state.questions} handleRemove={this.deleteQs}/>
                 </div>
-                <Form onSubmit={this.registerNewQuestion}>
+                <Form onSubmit={this.writeUserData}>
                     <OptionsType callBack = {this.changeType}/>
                     <QuestionStatement placeholder = "Write your Question Statement here ..." callBack = {this.changeQuesStatement}/> 
                     {this.state.type == "MCQ"?<McqOptions callBack={this.addMCQ}/>:<></>}
                     <div className="row">
                         <div className = "mx-auto">
-                            <Input type="submit" value="Add" />
+                            <Button onClick ={this.registerNewQuestion} >Add </Button >
+                        </div>  
+                        <div className = "mx-auto">
+                            <Button onClick ={this.writeUserData} >Make </Button >
                         </div>  
                     </div>
                 </Form>

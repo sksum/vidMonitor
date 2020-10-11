@@ -11,8 +11,8 @@ const MainPage = (props) => {
     return (
         <>
         <LOGO />
-        <button onClick={()=>create("room")}>Create Room</button>
-        <button onClick={()=>create("invil")}>Create Test</button>
+            {/* <button onClick={()=>create("room")}>Create Room</button>
+            <button onClick={()=>create("invil")}>Create Test</button> */}
         </>
     );
 }

@@ -132,6 +132,7 @@ const QuestionStatement = (props) => {
         placeholder={props.placeholder}
         variant="outlined"
         style={{ marginTop: "20px" }}
+        onChange={handleChange}
       />
       <Input type="file" name="file" id="exampleFile" />
     </form>
@@ -171,6 +172,7 @@ export default class NewForm extends Component {
       questions: [],
       new_ques: {
         qs: "",
+        options: [],
       },
       type: "MCQ",
     };
@@ -194,6 +196,7 @@ export default class NewForm extends Component {
       qs: this.state.new_ques.qs,
       id: globalId++,
       options: this.state.new_ques.options,
+      type: this.state.type,
     });
     this.setState({ questions });
     console.log(questions);

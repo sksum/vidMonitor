@@ -8,11 +8,13 @@ import MainPage from "./MainPage";
 
 import Test_student from "./Video/Test_student.jsx";
 import Test_invil from "./Video/Test_invil.jsx";
+import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 
 const MainComponent = () => {
   return (
     <>
       <Router>
+        {/* <ThemeProvider theme={theme}> */}
         <Header />
         <Switch>
           <Route exact path="/" component={MainPage} />
@@ -20,6 +22,7 @@ const MainComponent = () => {
           <Route path="/test/:roomID" component={Test_student} />
           <Route path="/invil/:roomID" component={Test_invil} />
         </Switch>
+        {/* </ThemeProvider> */}
       </Router>
     </>
   );
